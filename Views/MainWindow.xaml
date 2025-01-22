@@ -4,9 +4,34 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ExtractTextPdf"
+        xmlns:PdfViewer="clr-namespace:Syncfusion.Windows.PdfViewer;assembly=Syncfusion.PdfViewer.WPF"
         mc:Ignorable="d"
         Title="PDF-CSV Search App" Height="600" Width="1000">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
 
+        <!-- Left panel -->
+        <StackPanel Orientation="Vertical" Margin="10" Grid.Column="0">
+            <Button Content="Load PDF Files" 
+                    Margin="0,0,0,10" Height="40" />
+            <ListBox Margin="0,0,0,10" 
+                    MinHeight="100"/>
+            <Button Content="Clear Pdf List" 
+                    Margin="0,0,0,10" Height="40"/>
+            <Button Content="Load CSV File" 
+                    Margin="0,0,0,10" Height="40" />
+            <Button Content="Search PDFs" 
+                    Margin="0,0,0,10" Height="40" />
+        </StackPanel>
+
+        <!-- Right panel with PDF view -->
+        <Grid Grid.Column="1" Margin="10">
+            <PdfViewer:PdfViewerControl Name="PdfViewer"
+                                        HorizontalAlignment="Stretch" 
+                                        VerticalAlignment="Stretch" />
+        </Grid>
     </Grid>
 </Window>
