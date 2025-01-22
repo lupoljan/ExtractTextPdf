@@ -9,6 +9,8 @@ using Syncfusion.Windows.PdfViewer;
 using System.Globalization;
 using System.IO;
 using System.Windows;
+using Syncfusion.Pdf;
+using System.Text.RegularExpressions;
 
 namespace ExtractTextPdf.ViewModels
 {
@@ -58,9 +60,16 @@ namespace ExtractTextPdf.ViewModels
 
         public bool HasCsvData => CsvData != null && CsvData.Any();
 
+        private string _searchResultMessage;
+        public string SearchResultMessage
+        {
+            get => _searchResultMessage;
+            set => SetProperty(ref _searchResultMessage, value);
+        }
         public IRelayCommand LoadPdfCommand { get; }
         public IRelayCommand ClearPdfListCommand { get; }
         public IRelayCommand LoadCsvCommand { get; }
+        public IRelayCommand SearchCommand { get; }
 
         public MainViewModel()
         {
@@ -70,6 +79,7 @@ namespace ExtractTextPdf.ViewModels
             LoadPdfCommand = new RelayCommand(LoadPdf);
             ClearPdfListCommand = new RelayCommand(ClearPdfList);
             LoadCsvCommand = new RelayCommand(LoadCsv);
+            SearchCommand = new RelayCommand(Search);
         }
 
         private void LoadPdf()
@@ -91,6 +101,7 @@ namespace ExtractTextPdf.ViewModels
         {
             PdfFiles.Clear();
             PdfFiles = new List<string>();
+            SearchResultMessage = "";
         }
 
         private void LoadCsv()
@@ -121,5 +132,58 @@ namespace ExtractTextPdf.ViewModels
             }
         }
 
+        private void Search()
+        {
+            if (!PdfFiles.Any() || !CsvData.Any())
+            {
+                MessageBox.Show("Please load both PDF files and a CSV file first.");
+                return;
+            }
+
+            var matchingFiles = new List<string>();
+
+            foreach (var pdfFile in PdfFiles)
+            {
+                // Extract text from the current PDF file
+                string pdfText = ExtractTextFromPdf(pdfFile);
+
+                // Check if any Invoice object matches the extracted text
+                if (CsvData.Any(invoice =>
+                        Regex.IsMatch(pdfText, Regex.Escape(invoice.InvoiceNumber), RegexOptions.IgnoreCase) &&
+                        Regex.IsMatch(pdfText, Regex.Escape(invoice.Price.ToString()), RegexOptions.IgnoreCase)))
+                {
+                    matchingFiles.Add(pdfFile);
+                }
+            }
+
+            SearchResultMessage = matchingFiles.Any()
+                ? $"Found {matchingFiles.Count} matching PDF files:\n{string.Join("\n", matchingFiles)}"
+                : "No matching PDF files found.";
+        }
+
+        private string ExtractTextFromPdf(string path)
+        {
+            try
+            {
+                PdfDocumentView pdfDocumentView = new PdfDocumentView();
+                //Load the PDF file.
+                pdfDocumentView.Load(path);
+
+                //Extract text from the file.
+                TextLines textLines = new TextLines();
+                string extractedText = string.Empty;
+                for (int i = 0; i < pdfDocumentView.PageCount; i++)
+                {
+                    extractedText += pdfDocumentView.ExtractText(i, out textLines);
+                }
+
+                return extractedText;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error reading PDF file {path}: {ex.Message}");
+                return string.Empty;
+            }
+        }
     }
 }

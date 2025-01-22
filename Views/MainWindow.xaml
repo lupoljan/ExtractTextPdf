@@ -62,7 +62,16 @@
             </Grid>
 
             <Button Content="Search PDFs" 
+                    Command="{Binding SearchCommand}" 
                     Margin="0,0,0,10" Height="40" />
+
+            <Label Content="{Binding SearchResultMessage}" 
+               HorizontalAlignment="Left" 
+               VerticalAlignment="Top" 
+               Margin="10,10,10,0" 
+               FontSize="14" 
+               Foreground="Red" 
+               Height="Auto" />
         </StackPanel>
 
         <!-- Right panel with PDF view -->
