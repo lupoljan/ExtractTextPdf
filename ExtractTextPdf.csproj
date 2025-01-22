@@ -14,4 +14,8 @@
     <PackageReference Include="Syncfusion.PdfViewer.WPF" Version="28.1.41" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>
