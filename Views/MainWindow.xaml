@@ -16,11 +16,24 @@
         <!-- Left panel -->
         <StackPanel Orientation="Vertical" Margin="10" Grid.Column="0">
             <Button Content="Load PDF Files" 
+                    Command="{Binding LoadPdfCommand}" 
                     Margin="0,0,0,10" Height="40" />
-            <ListBox Margin="0,0,0,10" 
-                    MinHeight="100"/>
+            
+            <ListBox ItemsSource="{Binding PdfFiles}" 
+                     SelectedItem="{Binding SelectedPdfFile, Mode=TwoWay}"
+                     Margin="0,0,0,10" MinHeight="100">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
             <Button Content="Clear Pdf List" 
+                    Command="{Binding ClearPdfListCommand}" 
+                    Visibility="{Binding HasPdfFiles, Converter={StaticResource BoolToVisibilityConverter}}"
                     Margin="0,0,0,10" Height="40"/>
+
             <Button Content="Load CSV File" 
                     Margin="0,0,0,10" Height="40" />
             <Button Content="Search PDFs" 
@@ -30,6 +43,7 @@
         <!-- Right panel with PDF view -->
         <Grid Grid.Column="1" Margin="10">
             <PdfViewer:PdfViewerControl Name="PdfViewer"
+                                        ItemSource="{Binding SelectedPdfFile}"
                                         HorizontalAlignment="Stretch" 
                                         VerticalAlignment="Stretch" />
         </Grid>
