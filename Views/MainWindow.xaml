@@ -33,9 +33,34 @@
                     Command="{Binding ClearPdfListCommand}" 
                     Visibility="{Binding HasPdfFiles, Converter={StaticResource BoolToVisibilityConverter}}"
                     Margin="0,0,0,10" Height="40"/>
-
-            <Button Content="Load CSV File" 
+            
+            <Button Content="Load CSV File"
+                    Command="{Binding LoadCsvCommand}" 
                     Margin="0,0,0,10" Height="40" />
+            <TextBlock Text="{Binding CsvData.Count, StringFormat='Loaded CSV Rows: {0}'}" 
+                       Margin="0,0,0,10" />
+
+            <Grid Grid.Column="0" Margin="10, 20, 10, 10" Visibility="{Binding HasCsvData, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" Margin="5" Grid.Row="0">
+                    <TextBlock Text="Invoice Number" Width="200" Margin="5,0" />
+                    <TextBlock Text="Price" Width="100"  Margin="5,0" />
+                </StackPanel>
+                <ListBox ItemsSource="{Binding CsvData}" Grid.Row="1">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="5">
+                                <TextBlock Text="{Binding InvoiceNumber}" Width="200" Margin="5,0" />
+                                <TextBlock Text="{Binding Price}" Width="100" Margin="5,0" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+
             <Button Content="Search PDFs" 
                     Margin="0,0,0,10" Height="40" />
         </StackPanel>
